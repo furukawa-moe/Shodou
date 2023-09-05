@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Realms;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Shodou
@@ -60,14 +61,44 @@ namespace Shodou
                 
                 output.Append("\nmissing mnemonic\n");
 
-                string kanjiSvgImage = File.ReadAllText($"kanjivg/kanji/0{kanjiToken.Codepoint}.svg");
-                kanjiSvgImage = "<svg xmlns=\"" + kanjiSvgImage.Split("<svg xmlns=\"")[1].Replace(System.Environment.NewLine, "").Replace("\t", "");
-                output.Append(kanjiSvgImage);
-
                 if (!File.Exists($"{kanjiToken.Codepoint}.txt"))
                 {
                     File.WriteAllBytes($"resources/{kanjiToken.Codepoint}.txt", Encoding.UTF8.GetBytes(output.ToString()));
                 }
+            }
+            CompileRealmFile();
+        }
+
+        public static void CompileRealmFile()
+        {
+            Console.WriteLine("Generate Realm Database");
+            var config = new RealmConfiguration(Path.Combine(Directory.GetCurrentDirectory(), "kanjicards.realm"));
+            Realm realm = Realm.GetInstance(config);
+
+            string filepath = "resources";
+            DirectoryInfo d = new DirectoryInfo(filepath);
+
+            foreach (var file in d.GetFiles("*.txt"))
+            {
+                string[] txtCard = File.ReadAllLines(file.FullName);
+                string txtKanji = txtCard[0];
+                string txtKeyword = txtCard[1];
+                string txtComponents = txtCard[2];
+                string txtMnemonic = txtCard[3];
+
+                var kanjiMnemonicCard = new KanjiMnemonicCard
+                {
+                    Kanji = txtKanji,
+                    Radicals = txtComponents,
+                    Keyword = txtKeyword,
+                    Mnemonic = txtMnemonic,
+                    Svg = "0" + txtKanji.Split(":")[1] + ".svg"
+                };
+
+                realm.Write(() =>
+                {
+                    realm.Add(kanjiMnemonicCard);
+                });
             }
         }
     }

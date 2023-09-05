@@ -14,6 +14,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Realm" Version="11.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="kanjivg\kanji\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
