@@ -12,9 +12,11 @@ namespace Shodou.Editor
         public int KanjiFileCount = 250;
         public int KanjiPageNumber = 1;
 
-        public EditorForm()
+        public EditorForm(bool darkMode)
         {
             InitializeComponent();
+            if(darkMode) { SetWindowDarkMode(); }
+            
         }
 
         public void ApplyCurrentKanji(string codepoint)
@@ -27,6 +29,38 @@ namespace Shodou.Editor
             currentKanjiComponents.Text = importedKanji[2];
             currentKanjiMnemonic.Text = importedKanji[3];
             currentKanjiCharacter.DocumentText = File.ReadAllText($@"kanjivg\kanji\0{codepoint}.svg");
+        }
+
+        public void SetWindowDarkMode()
+        {
+            UnnecessaryAndStupidNativeHookForDarkModeThatWillBreak.UseImmersiveDarkMode(this.Handle, true);
+            menuStrip1.BackColor = Color.Black;
+            menuStrip1.ForeColor = Color.White;
+            fileToolStripMenuItem.BackColor = Color.Black;
+            fileToolStripMenuItem.ForeColor = Color.White;
+            this.BackColor = Color.FromArgb(32, 32, 32);
+            this.ForeColor = Color.White;
+            flowLayoutPanel1.BackColor = this.BackColor;
+            flowLayoutPanel1.ForeColor = this.ForeColor;
+            currentKanjiKeyword.BackColor = Color.FromArgb(25, 25, 25);
+            currentKanjiKeyword.ForeColor = this.ForeColor;
+            currentKanjiKeyword.BorderStyle = BorderStyle.None;
+            currentKanjiMnemonic.BackColor = Color.FromArgb(25, 25, 25);
+            currentKanjiMnemonic.ForeColor = this.ForeColor;
+            currentKanjiMnemonic.BorderStyle = BorderStyle.None;
+            statusStrip1.BackColor = Color.FromArgb(51, 51, 51);
+            statusStrip1.ForeColor = Color.White;
+            currentKanjiOpenInEditor.BackColor = Color.FromArgb(25,25,25);
+            currentKanjiOpenInEditor.ForeColor = Color.White;
+            currentKanjiOpenInEditor.FlatStyle = FlatStyle.Flat;
+            currentKanjiOpenInEditor.FlatAppearance.BorderColor = Color.Black;
+            currentKanjiComponents.BackColor = Color.FromArgb(25, 25, 25);
+            currentKanjiComponents.ForeColor = Color.White;
+            currentKanjiComponents.BorderStyle = BorderStyle.None;
+            splitContainer1.BackColor = Color.FromArgb(43, 43, 43);
+            splitContainer1.ForeColor = Color.White;
+            splitter2.BackColor = Color.FromArgb(43, 43, 43);
+            splitter3.BackColor = Color.FromArgb(43, 43, 43);
         }
 
         private void EditorForm_Load(object sender, EventArgs e)

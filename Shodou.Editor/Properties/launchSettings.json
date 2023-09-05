@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Shodou.Editor": {
+      "commandName": "Project",
+      "commandLineArgs": "--dark"
+    }
+  }
+}
