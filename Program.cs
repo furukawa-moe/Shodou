@@ -61,7 +61,7 @@ namespace Shodou
                 
                 output.Append("\nmissing mnemonic\n");
 
-                if (!File.Exists($"{kanjiToken.Codepoint}.txt"))
+                if (!File.Exists($"resources/{kanjiToken.Codepoint}.txt"))
                 {
                     File.WriteAllBytes($"resources/{kanjiToken.Codepoint}.txt", Encoding.UTF8.GetBytes(output.ToString()));
                 }
@@ -71,6 +71,8 @@ namespace Shodou
 
         public static void CompileRealmFile()
         {
+            if(File.Exists("kanjicards.realm")) File.Delete("kanjicards.realm");
+
             Console.WriteLine("Generate Realm Database");
             var config = new RealmConfiguration(Path.Combine(Directory.GetCurrentDirectory(), "kanjicards.realm"));
             Realm realm = Realm.GetInstance(config);
