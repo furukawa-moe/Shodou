@@ -8,6 +8,10 @@ namespace Shodou.Editor
     public partial class EditorForm : Form
     {
         public string currentCodepoint = "";
+        public int KanjiFileStartOffset = 0;
+        public int KanjiFileCount = 250;
+        public int KanjiPageNumber = 1;
+
         public EditorForm()
         {
             InitializeComponent();
@@ -27,6 +31,28 @@ namespace Shodou.Editor
 
         private void EditorForm_Load(object sender, EventArgs e)
         {
+            RefreshKanjiList(KanjiFileStartOffset, KanjiFileCount);
+        }
+
+        private void currentKanjiOpenInEditor_Click(object sender, EventArgs e)
+        {
+            ProcessStartInfo psi = new ProcessStartInfo();
+            psi.FileName = @$"resources\{currentCodepoint}.txt";
+            psi.UseShellExecute = true;
+            Process.Start(psi);
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Environment.Exit(0);
+        }
+
+        private void RefreshKanjiList(int startOffset, int count)
+        {
+            int startOffsetCounter = 0;
+
+            flowLayoutPanel1.Controls.Clear();
+
             string[] kanjiDictionary = File.ReadAllLines(@"topokanji\dependencies\1-to-N.txt");
 
             int pageCount = 0;
@@ -34,6 +60,11 @@ namespace Shodou.Editor
             // Fill each Kanji Token with Character and Codepoint
             foreach (string s in kanjiDictionary)
             {
+                if (startOffsetCounter < startOffset)
+                {
+                    startOffsetCounter++;
+                    continue;
+                }
                 int itemHasMnemonic = 0;
                 int componentsHaveMnemonics = 0;
 
@@ -86,27 +117,39 @@ namespace Shodou.Editor
 
                 flowLayoutPanel1.Controls.Add(item);
                 pageCount++;
-                if (pageCount == 250) break;
+                if (pageCount == KanjiFileCount) break;
+            }
+
+            if (!String.IsNullOrEmpty(currentCodepoint))
+            {
+                ApplyCurrentKanji(currentCodepoint);
+            }
+        }
+        private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RefreshKanjiList(KanjiFileStartOffset, KanjiFileCount);
+        }
+
+        private void movePageLeftBtn_ButtonClick(object sender, EventArgs e)
+        {
+            if (KanjiFileStartOffset >= 250)
+            {
+                KanjiFileStartOffset -= 250;
+                KanjiPageNumber--;
+                kanjiPageIndicator.Text = $"Page {KanjiPageNumber}";
+                RefreshKanjiList(KanjiFileStartOffset, KanjiFileCount);
             }
         }
 
-        private void currentKanjiOpenInEditor_Click(object sender, EventArgs e)
+        private void movePageRightBtn_ButtonClick(object sender, EventArgs e)
         {
-            ProcessStartInfo psi = new ProcessStartInfo();
-            psi.FileName = @$"resources\{currentCodepoint}.txt";
-            psi.UseShellExecute = true;
-            Process.Start(psi);
-        }
-
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Environment.Exit(0);
-        }
-
-        private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            flowLayoutPanel1.Controls.Clear();
-            EditorForm_Load(this, EventArgs.Empty);
+            if (KanjiFileStartOffset <= 7500 && KanjiPageNumber < 10)
+            {
+                KanjiFileStartOffset += 250;
+                KanjiPageNumber++;
+                kanjiPageIndicator.Text = $"Page {KanjiPageNumber}";
+                RefreshKanjiList(KanjiFileStartOffset, KanjiFileCount);
+            }
         }
     }
 }
