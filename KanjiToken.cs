@@ -10,9 +10,9 @@ namespace Shodou
     {
         public char KanjiChar;
         public string Codepoint;
-        public List<string> KanjiComponents;
+        public List<char> KanjiComponents;
 
-        public KanjiToken(char kanji, string codepoint, List<string> kanjiComponents)
+        public KanjiToken(char kanji, string codepoint, List<char> kanjiComponents)
         {
             this.KanjiChar = kanji;
             this.Codepoint = codepoint;

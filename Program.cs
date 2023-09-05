@@ -14,7 +14,7 @@ namespace Shodou
             // Fill each Kanji Token with Character, Codepoint and Radicals
             foreach (string s in kanjiDictionary)
             {
-                kanjiTokens.Add(new KanjiToken(s[0], ((int)s[0]).ToString("x"), new List<string>()));
+                kanjiTokens.Add(new KanjiToken(s[0], ((int)s[0]).ToString("x"), new List<char>()));
                 string[] splitString = s.Split(" ");
                 if (splitString[1] == "0")
                 {
@@ -23,20 +23,20 @@ namespace Shodou
 
                 foreach (char component in splitString[1])
                 {
-                    kanjiTokens.Last().KanjiComponents.Add(component.ToString());
+                    kanjiTokens.Last().KanjiComponents.Add(component);
                 }
             }
 
             // Search through KanjiTokens and collect radicals
-            Dictionary<string, string> kanjiRadicals = new Dictionary<string, string>();
+            Dictionary<char, string> kanjiRadicals = new Dictionary<char, string>();
 
             foreach (KanjiToken kanjiToken in kanjiTokens)
             {
-                foreach (string component in kanjiToken.KanjiComponents)
+                foreach (char component in kanjiToken.KanjiComponents)
                 {
                     if (!kanjiRadicals.ContainsKey(component))
                     {
-                        kanjiRadicals.Add(component, kanjiToken.Codepoint);
+                        kanjiRadicals.Add(component, ((int)component).ToString("x"));
                     }
                 }
             }
@@ -50,7 +50,7 @@ namespace Shodou
             {
                 StringBuilder output = new StringBuilder();
                 output.Append(kanjiToken.KanjiChar + $":{kanjiToken.Codepoint}\nmissing keyword\n");
-                foreach (string component in kanjiToken.KanjiComponents)
+                foreach (char component in kanjiToken.KanjiComponents)
                 {
                     if (kanjiRadicals.TryGetValue(component, out string cp))
                     {
