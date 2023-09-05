@@ -1,46 +1,30 @@
+﻿using System.Text;
+using System.Text.RegularExpressions;
+
 namespace Shodou
 {
     internal static class Program
     {
         static void Main(string[] args)
         {
-            if(args.Length != 2)
-            {
-                Console.WriteLine("Provide a path to Aozora Bunko Kanji Frequency List and latest KanjiVG kanji folder.");
-                Environment.Exit(1);
-            }
-
-            string[] kanjiDictionary = File.ReadAllLines(args[0]);
+            string[] kanjiDictionary = File.ReadAllLines("topokanji/dependencies/1-to-N.txt");
 
             List<KanjiToken> kanjiTokens = new List<KanjiToken>();
 
-            // Fill each Kanji Token with Character and Codepoint
+            // Fill each Kanji Token with Character, Codepoint and Radicals
             foreach (string s in kanjiDictionary)
             {
-                kanjiTokens.Add(new KanjiToken(s.Split("0x")[0].Trim().Last(), "0" + s.Split("0x")[1], new List<string>()));
-            }
-
-            // Search KanjiVG for those codepoints to extract components
-            foreach (KanjiToken kanjiToken in kanjiTokens)
-            {
-                string kanjiVGentry;
-
-                try
+                kanjiTokens.Add(new KanjiToken(s[0], ((int)s[0]).ToString("x"), new List<string>()));
+                string[] splitString = s.Split(" ");
+                if (splitString[1] == "0")
                 {
-                    kanjiVGentry = File.ReadAllText(Path.Combine(args[1], $"{kanjiToken.Codepoint}.svg"));
-                }
-                catch { continue; }
-
-                int lastIndex = 0;
-
-                while (true)
-                {
-                    lastIndex = kanjiVGentry.IndexOf("kvg:element=\"", lastIndex + 1);
-                    if (lastIndex == -1) break;
-                    kanjiToken.KanjiComponents.Add(kanjiVGentry[lastIndex + 13].ToString());
+                    continue;
                 }
 
-                kanjiToken.KanjiComponents.RemoveAt(0);
+                foreach (char component in splitString[1])
+                {
+                    kanjiTokens.Last().KanjiComponents.Add(component.ToString());
+                }
             }
 
             // Search through KanjiTokens and collect radicals
@@ -48,27 +32,43 @@ namespace Shodou
 
             foreach (KanjiToken kanjiToken in kanjiTokens)
             {
-                foreach (var item in kanjiToken.KanjiComponents)
+                foreach (string component in kanjiToken.KanjiComponents)
                 {
-                    if (!kanjiRadicals.ContainsKey(item))
+                    if (!kanjiRadicals.ContainsKey(component))
                     {
-                        kanjiRadicals.Add(item, "");
-                    }
-                }
-            }
-
-            foreach (KanjiToken kanjiToken in kanjiTokens)
-            {
-                if (kanjiRadicals.ContainsKey(kanjiToken.KanjiChar.ToString()))
-                {
-                    if (kanjiToken.KanjiComponents.Count > 0)
-                    {
-                        kanjiRadicals.Remove(kanjiToken.KanjiChar.ToString());
+                        kanjiRadicals.Add(component, kanjiToken.Codepoint);
                     }
                 }
             }
 
             Console.WriteLine($"Complete! Loaded {kanjiTokens.Count} kanji ({kanjiRadicals.Count} radicals)");
+
+            // Let's check out the mnemonic files and see what matches the kanji we found
+            // Create it if it doesn't exist already
+            Directory.CreateDirectory("resources");
+            foreach (KanjiToken kanjiToken in kanjiTokens)
+            {
+                StringBuilder output = new StringBuilder();
+                output.Append(kanjiToken.KanjiChar + $":{kanjiToken.Codepoint}\nmissing keyword\n");
+                foreach (string component in kanjiToken.KanjiComponents)
+                {
+                    if (kanjiRadicals.TryGetValue(component, out string cp))
+                    {
+                        output.Append("/" + component + ":" + cp);
+                    }
+                }
+                
+                output.Append("\nmissing mnemonic\n");
+
+                string kanjiSvgImage = File.ReadAllText($"kanjivg/kanji/0{kanjiToken.Codepoint}.svg");
+                kanjiSvgImage = "<svg xmlns=\"" + kanjiSvgImage.Split("<svg xmlns=\"")[1].Replace(System.Environment.NewLine, "").Replace("\t", "");
+                output.Append(kanjiSvgImage);
+
+                if (!File.Exists($"{kanjiToken.Codepoint}.txt"))
+                {
+                    File.WriteAllBytes($"resources/{kanjiToken.Codepoint}.txt", Encoding.UTF8.GetBytes(output.ToString()));
+                }
+            }
         }
     }
 }

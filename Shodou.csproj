@@ -6,4 +6,19 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Shodou.Editor\**" />
+    <EmbeddedResource Remove="Shodou.Editor\**" />
+    <None Remove="Shodou.Editor\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="kanjivg\kanji\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="topokanji\dependencies\1-to-N.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

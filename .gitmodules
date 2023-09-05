@@ -1,0 +1,6 @@
+[submodule "topokanji"]
+	path = topokanji
+	url = https://github.com/scriptin/topokanji
+[submodule "kanjivg"]
+	path = kanjivg
+	url = https://github.com/KanjiVG/kanjivg
