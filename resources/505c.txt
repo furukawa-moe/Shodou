@@ -1,0 +1,4 @@
+停:505c
+missing keyword
+/亻:4ebb/亭:4ead
+missing mnemonic

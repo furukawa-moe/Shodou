@@ -1,0 +1,4 @@
+灯:706f
+missing keyword
+/火:706b/丁:4e01
+missing mnemonic

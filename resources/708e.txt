@@ -1,0 +1,4 @@
+炎:708e
+missing keyword
+/火:706b
+missing mnemonic

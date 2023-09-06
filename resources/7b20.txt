@@ -1,0 +1,4 @@
+笠:7b20
+missing keyword
+/竹:7af9/立:7acb
+missing mnemonic

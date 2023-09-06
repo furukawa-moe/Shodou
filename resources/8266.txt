@@ -1,0 +1,4 @@
+艦:8266
+missing keyword
+/舟:821f/監:76e3
+missing mnemonic

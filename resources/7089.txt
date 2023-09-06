@@ -1,0 +1,4 @@
+炉:7089
+missing keyword
+/火:706b/戸:6238
+missing mnemonic

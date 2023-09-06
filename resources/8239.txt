@@ -1,0 +1,4 @@
+船:8239
+missing keyword
+/舟:821f/几:51e0/口:53e3
+missing mnemonic

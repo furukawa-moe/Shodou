@@ -1,0 +1,4 @@
+走:8d70
+missing keyword
+/土:571f/止:6b62
+missing mnemonic

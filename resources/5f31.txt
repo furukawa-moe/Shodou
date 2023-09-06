@@ -1,0 +1,4 @@
+弱:5f31
+missing keyword
+/弓:5f13/冫:51ab
+missing mnemonic
