@@ -4,3 +4,9 @@
 [submodule "kanjivg"]
 	path = kanjivg
 	url = https://github.com/KanjiVG/kanjivg
+[submodule "thirdparty/topokanji"]
+	path = thirdparty/topokanji
+	url = https://github.com/scriptin/topokanji
+[submodule "thirdparty/kanjivg"]
+	path = thirdparty/kanjivg
+	url = https://github.com/KanjiVG/kanjivg

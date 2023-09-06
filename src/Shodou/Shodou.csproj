@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Realm" Version="11.4.0" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<KanjiVG Include="..\..\thirdparty\kanjivg\kanji\*.*"/>
+	</ItemGroup>
+
+	<Target Name="CopyCustomContent" AfterTargets="AfterBuild">
+		<Copy SourceFiles="..\..\thirdparty\topokanji\dependencies\1-to-N.txt" DestinationFolder="$(OutDir)/topokanji/dependencies/" />
+		<Copy SourceFiles="@(KanjiVG)" DestinationFolder="$(OutDir)/kanjivg/kanji/" />
+	</Target>
+</Project>

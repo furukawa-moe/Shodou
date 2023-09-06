@@ -21,4 +21,12 @@
 			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
 	</ItemGroup>
+	<ItemGroup>
+		<KanjiVG Include="..\..\thirdparty\kanjivg\kanji\*.*"/>
+	</ItemGroup>
+
+	<Target Name="CopyCustomContent" AfterTargets="AfterBuild">
+		<Copy SourceFiles="..\..\thirdparty\topokanji\dependencies\1-to-N.txt" DestinationFolder="$(OutDir)/topokanji/dependencies/" />
+		<Copy SourceFiles="@(KanjiVG)" DestinationFolder="$(OutDir)/kanjivg/kanji/" />
+	</Target>
 </Project>
