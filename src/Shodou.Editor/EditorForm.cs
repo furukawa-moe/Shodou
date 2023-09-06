@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq.Expressions;
 using System.Runtime.InteropServices;
@@ -7,23 +8,28 @@ namespace Shodou.Editor
 {
     public partial class EditorForm : Form
     {
+        /// <summary>
+        /// I have decided to use the summary here to let you know this is NOT something I took the time to make properly.
+        /// The contents of this file do NOT reflect my religious beliefs.
+        /// </summary>
         public string currentCodepoint = "";
         public int KanjiFileStartOffset = 0;
         public int KanjiFileCount = 250;
         public int KanjiPageNumber = 1;
+        public string KanjiFolderImportPath = "";
 
         public EditorForm(bool darkMode)
         {
             InitializeComponent();
-            if(darkMode) { SetWindowDarkMode(); }
-            
+            if (darkMode) { SetWindowDarkMode(); }
+
         }
 
         public void ApplyCurrentKanji(string codepoint)
         {
             currentCodepoint = codepoint;
             currentKanjiOpenInEditor.Enabled = true;
-            string[] importedKanji = File.ReadAllLines(@$"resources\{codepoint}.txt");
+            string[] importedKanji = File.ReadAllLines(Path.Combine(KanjiFolderImportPath, @$"{codepoint}.txt"));
             Clipboard.SetText(importedKanji[0].Split(":")[0]);
             currentKanjiKeyword.Text = importedKanji[1];
             currentKanjiComponents.Text = importedKanji[2];
@@ -50,7 +56,7 @@ namespace Shodou.Editor
             currentKanjiMnemonic.BorderStyle = BorderStyle.None;
             statusStrip1.BackColor = Color.FromArgb(51, 51, 51);
             statusStrip1.ForeColor = Color.White;
-            currentKanjiOpenInEditor.BackColor = Color.FromArgb(25,25,25);
+            currentKanjiOpenInEditor.BackColor = Color.FromArgb(25, 25, 25);
             currentKanjiOpenInEditor.ForeColor = Color.White;
             currentKanjiOpenInEditor.FlatStyle = FlatStyle.Flat;
             currentKanjiOpenInEditor.FlatAppearance.BorderColor = Color.Black;
@@ -71,7 +77,7 @@ namespace Shodou.Editor
         private void currentKanjiOpenInEditor_Click(object sender, EventArgs e)
         {
             ProcessStartInfo psi = new ProcessStartInfo();
-            psi.FileName = @$"resources\{currentCodepoint}.txt";
+            psi.FileName = @Path.Combine(KanjiFolderImportPath, @$"{currentCodepoint}.txt");
             psi.UseShellExecute = true;
             Process.Start(psi);
         }
@@ -83,10 +89,13 @@ namespace Shodou.Editor
 
         private void RefreshKanjiList(int startOffset, int count)
         {
+            if (KanjiFolderImportPath == "") { return; }
+
             int startOffsetCounter = 0;
 
             flowLayoutPanel1.Controls.Clear();
 
+            // We read from the frequency list to put the kanji in order
             string[] kanjiDictionary = File.ReadAllLines(@"topokanji\dependencies\1-to-N.txt");
 
             int pageCount = 0;
@@ -104,7 +113,7 @@ namespace Shodou.Editor
 
                 KanjiItem item = new KanjiItem(s[0], ((int)s[0]).ToString("x"), KanjiItem.KanjiStatus.None);
                 // Open the item and see if it has mnemonics
-                string[] importedKanji = File.ReadAllLines(@$"resources\{item.Codepoint}.txt");
+                string[] importedKanji = File.ReadAllLines(Path.Combine(KanjiFolderImportPath, @$"{item.Codepoint}.txt"));
                 if (importedKanji[1] != "missing keyword" && importedKanji[3] != "missing mnemonic") itemHasMnemonic = 1;
                 if (importedKanji[2] == "")
                 {
@@ -124,7 +133,7 @@ namespace Shodou.Editor
                     }
                     foreach (string component in splitComponentsString)
                     {
-                        string[] importedComponent = File.ReadAllLines(@$"resources\{component}.txt");
+                        string[] importedComponent = File.ReadAllLines(Path.Combine(KanjiFolderImportPath, @$"{component}.txt"));
                         if (importedComponent[1] != "missing keyword" && importedComponent[3] != "missing mnemonic") componentWithMnemonicCount++;
                     }
 
@@ -183,6 +192,29 @@ namespace Shodou.Editor
                 KanjiPageNumber++;
                 kanjiPageIndicator.Text = $"Page {KanjiPageNumber}";
                 RefreshKanjiList(KanjiFileStartOffset, KanjiFileCount);
+            }
+        }
+
+        private void openFolderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TryFolderDialogueAgain:
+            using (var fbd = new FolderBrowserDialog())
+            {
+                DialogResult result = fbd.ShowDialog();
+
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
+                    KanjiFolderImportPath = fbd.SelectedPath;
+                    try
+                    {
+                        RefreshKanjiList(KanjiFileStartOffset, KanjiFileCount);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("You probably didn't select the right folder. Baaaka.", "Could Not Load Kanji Cards", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        goto TryFolderDialogueAgain;
+                    }
+                }
             }
         }
     }
