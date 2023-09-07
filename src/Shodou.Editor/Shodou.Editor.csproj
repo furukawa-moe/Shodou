@@ -22,7 +22,7 @@
 		</EmbeddedResource>
 	</ItemGroup>
 	<ItemGroup>
-		<KanjiVG Include="..\..\thirdparty\kanjivg\kanji\*.*"/>
+		<KanjiVG Include="..\..\thirdparty\kanjivg\kanji\*.*" />
 	</ItemGroup>
 
 	<Target Name="CopyCustomContent" AfterTargets="AfterBuild">

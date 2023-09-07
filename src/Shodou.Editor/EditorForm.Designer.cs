@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditorForm));
             menuStrip1 = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
+            openFolderToolStripMenuItem = new ToolStripMenuItem();
             refreshToolStripMenuItem = new ToolStripMenuItem();
             exitToolStripMenuItem = new ToolStripMenuItem();
             splitContainer1 = new SplitContainer();
@@ -40,13 +41,17 @@
             movePageLeftBtn = new ToolStripSplitButton();
             movePageRightBtn = new ToolStripSplitButton();
             kanjiPageIndicator = new ToolStripStatusLabel();
-            currentKanjiOpenInEditor = new Button();
+            splitter6 = new Splitter();
             currentKanjiMnemonic = new Label();
-            currentKanjiComponents = new Label();
+            splitter5 = new Splitter();
+            currentKanjiComponents = new LinkLabel();
+            splitter4 = new Splitter();
             currentKanjiKeyword = new Label();
-            currentKanjiCharacter = new WebBrowser();
             splitter3 = new Splitter();
-            openFolderToolStripMenuItem = new ToolStripMenuItem();
+            currentKanjiCharacter = new WebBrowser();
+            currentKanjiWiktionaryLink = new LinkLabel();
+            splitter1 = new Splitter();
+            currentKanjiOpenInEditor = new Button();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -75,17 +80,24 @@
             fileToolStripMenuItem.Size = new Size(37, 20);
             fileToolStripMenuItem.Text = "File";
             // 
+            // openFolderToolStripMenuItem
+            // 
+            openFolderToolStripMenuItem.Name = "openFolderToolStripMenuItem";
+            openFolderToolStripMenuItem.Size = new Size(139, 22);
+            openFolderToolStripMenuItem.Text = "Open Folder";
+            openFolderToolStripMenuItem.Click += openFolderToolStripMenuItem_Click;
+            // 
             // refreshToolStripMenuItem
             // 
             refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
-            refreshToolStripMenuItem.Size = new Size(180, 22);
+            refreshToolStripMenuItem.Size = new Size(139, 22);
             refreshToolStripMenuItem.Text = "Refresh";
             refreshToolStripMenuItem.Click += refreshToolStripMenuItem_Click;
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new Size(180, 22);
+            exitToolStripMenuItem.Size = new Size(139, 22);
             exitToolStripMenuItem.Text = "Exit";
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
             // 
@@ -107,14 +119,19 @@
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.BackColor = Color.White;
-            splitContainer1.Panel2.Controls.Add(currentKanjiOpenInEditor);
+            splitContainer1.Panel2.Controls.Add(splitter6);
             splitContainer1.Panel2.Controls.Add(currentKanjiMnemonic);
+            splitContainer1.Panel2.Controls.Add(splitter5);
             splitContainer1.Panel2.Controls.Add(currentKanjiComponents);
+            splitContainer1.Panel2.Controls.Add(splitter4);
             splitContainer1.Panel2.Controls.Add(currentKanjiKeyword);
-            splitContainer1.Panel2.Controls.Add(currentKanjiCharacter);
             splitContainer1.Panel2.Controls.Add(splitter3);
+            splitContainer1.Panel2.Controls.Add(currentKanjiCharacter);
+            splitContainer1.Panel2.Controls.Add(currentKanjiWiktionaryLink);
+            splitContainer1.Panel2.Controls.Add(splitter1);
+            splitContainer1.Panel2.Controls.Add(currentKanjiOpenInEditor);
             splitContainer1.Size = new Size(800, 426);
-            splitContainer1.SplitterDistance = 584;
+            splitContainer1.SplitterDistance = 606;
             splitContainer1.SplitterWidth = 3;
             splitContainer1.TabIndex = 1;
             // 
@@ -126,7 +143,7 @@
             flowLayoutPanel1.Location = new Point(0, 2);
             flowLayoutPanel1.Margin = new Padding(0);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(584, 402);
+            flowLayoutPanel1.Size = new Size(606, 402);
             flowLayoutPanel1.TabIndex = 2;
             // 
             // splitter2
@@ -135,7 +152,7 @@
             splitter2.Dock = DockStyle.Top;
             splitter2.Location = new Point(0, 0);
             splitter2.Name = "splitter2";
-            splitter2.Size = new Size(584, 2);
+            splitter2.Size = new Size(606, 2);
             splitter2.TabIndex = 1;
             splitter2.TabStop = false;
             // 
@@ -145,7 +162,7 @@
             statusStrip1.Items.AddRange(new ToolStripItem[] { movePageLeftBtn, movePageRightBtn, kanjiPageIndicator });
             statusStrip1.Location = new Point(0, 404);
             statusStrip1.Name = "statusStrip1";
-            statusStrip1.Size = new Size(584, 22);
+            statusStrip1.Size = new Size(606, 22);
             statusStrip1.TabIndex = 0;
             statusStrip1.Text = "statusStrip1";
             // 
@@ -179,78 +196,115 @@
             kanjiPageIndicator.Size = new Size(42, 17);
             kanjiPageIndicator.Text = "Page 1";
             // 
-            // currentKanjiOpenInEditor
+            // splitter6
             // 
-            currentKanjiOpenInEditor.Dock = DockStyle.Bottom;
-            currentKanjiOpenInEditor.Enabled = false;
-            currentKanjiOpenInEditor.Location = new Point(0, 403);
-            currentKanjiOpenInEditor.Name = "currentKanjiOpenInEditor";
-            currentKanjiOpenInEditor.Size = new Size(213, 23);
-            currentKanjiOpenInEditor.TabIndex = 6;
-            currentKanjiOpenInEditor.Text = "Open in Editor";
-            currentKanjiOpenInEditor.UseVisualStyleBackColor = true;
-            currentKanjiOpenInEditor.Click += currentKanjiOpenInEditor_Click;
+            splitter6.BackColor = SystemColors.ControlLight;
+            splitter6.Dock = DockStyle.Bottom;
+            splitter6.Location = new Point(0, 402);
+            splitter6.Name = "splitter6";
+            splitter6.Size = new Size(191, 2);
+            splitter6.TabIndex = 12;
+            splitter6.TabStop = false;
             // 
             // currentKanjiMnemonic
             // 
-            currentKanjiMnemonic.BorderStyle = BorderStyle.Fixed3D;
             currentKanjiMnemonic.Dock = DockStyle.Fill;
-            currentKanjiMnemonic.Location = new Point(0, 243);
+            currentKanjiMnemonic.Location = new Point(0, 268);
             currentKanjiMnemonic.Name = "currentKanjiMnemonic";
-            currentKanjiMnemonic.Size = new Size(213, 183);
+            currentKanjiMnemonic.Size = new Size(191, 136);
             currentKanjiMnemonic.TabIndex = 5;
-            currentKanjiMnemonic.Text = "(none)";
-            currentKanjiMnemonic.TextAlign = ContentAlignment.TopCenter;
+            // 
+            // splitter5
+            // 
+            splitter5.BackColor = SystemColors.ControlLight;
+            splitter5.Dock = DockStyle.Top;
+            splitter5.Location = new Point(0, 266);
+            splitter5.Name = "splitter5";
+            splitter5.Size = new Size(191, 2);
+            splitter5.TabIndex = 11;
+            splitter5.TabStop = false;
             // 
             // currentKanjiComponents
             // 
-            currentKanjiComponents.BorderStyle = BorderStyle.Fixed3D;
             currentKanjiComponents.Dock = DockStyle.Top;
-            currentKanjiComponents.Location = new Point(0, 164);
+            currentKanjiComponents.Location = new Point(0, 169);
             currentKanjiComponents.Name = "currentKanjiComponents";
-            currentKanjiComponents.Size = new Size(213, 79);
+            currentKanjiComponents.Size = new Size(191, 97);
             currentKanjiComponents.TabIndex = 4;
-            currentKanjiComponents.TextAlign = ContentAlignment.MiddleCenter;
+            currentKanjiComponents.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // splitter4
+            // 
+            splitter4.BackColor = SystemColors.ControlLight;
+            splitter4.Dock = DockStyle.Top;
+            splitter4.Location = new Point(0, 167);
+            splitter4.Name = "splitter4";
+            splitter4.Size = new Size(191, 2);
+            splitter4.TabIndex = 10;
+            splitter4.TabStop = false;
             // 
             // currentKanjiKeyword
             // 
-            currentKanjiKeyword.BorderStyle = BorderStyle.Fixed3D;
             currentKanjiKeyword.Dock = DockStyle.Top;
-            currentKanjiKeyword.Location = new Point(0, 141);
+            currentKanjiKeyword.Location = new Point(0, 144);
             currentKanjiKeyword.Name = "currentKanjiKeyword";
-            currentKanjiKeyword.Size = new Size(213, 23);
+            currentKanjiKeyword.Size = new Size(191, 23);
             currentKanjiKeyword.TabIndex = 3;
-            currentKanjiKeyword.Text = "(none)";
-            currentKanjiKeyword.TextAlign = ContentAlignment.MiddleCenter;
+            currentKanjiKeyword.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // splitter3
+            // 
+            splitter3.BackColor = SystemColors.ControlLight;
+            splitter3.Dock = DockStyle.Top;
+            splitter3.Location = new Point(0, 142);
+            splitter3.Name = "splitter3";
+            splitter3.Size = new Size(191, 2);
+            splitter3.TabIndex = 9;
+            splitter3.TabStop = false;
             // 
             // currentKanjiCharacter
             // 
             currentKanjiCharacter.AllowWebBrowserDrop = false;
             currentKanjiCharacter.Dock = DockStyle.Top;
             currentKanjiCharacter.IsWebBrowserContextMenuEnabled = false;
-            currentKanjiCharacter.Location = new Point(0, 2);
+            currentKanjiCharacter.Location = new Point(0, 25);
             currentKanjiCharacter.Name = "currentKanjiCharacter";
             currentKanjiCharacter.ScrollBarsEnabled = false;
-            currentKanjiCharacter.Size = new Size(213, 139);
+            currentKanjiCharacter.Size = new Size(191, 117);
             currentKanjiCharacter.TabIndex = 2;
             currentKanjiCharacter.WebBrowserShortcutsEnabled = false;
             // 
-            // splitter3
+            // currentKanjiWiktionaryLink
             // 
-            splitter3.BackColor = SystemColors.ControlLight;
-            splitter3.Dock = DockStyle.Top;
-            splitter3.Location = new Point(0, 0);
-            splitter3.Name = "splitter3";
-            splitter3.Size = new Size(213, 2);
-            splitter3.TabIndex = 1;
-            splitter3.TabStop = false;
+            currentKanjiWiktionaryLink.Dock = DockStyle.Top;
+            currentKanjiWiktionaryLink.Location = new Point(0, 2);
+            currentKanjiWiktionaryLink.Name = "currentKanjiWiktionaryLink";
+            currentKanjiWiktionaryLink.Size = new Size(191, 23);
+            currentKanjiWiktionaryLink.TabIndex = 7;
+            currentKanjiWiktionaryLink.TextAlign = ContentAlignment.MiddleLeft;
+            currentKanjiWiktionaryLink.LinkClicked += currentKanjiWiktionaryLink_LinkClicked;
             // 
-            // openFolderToolStripMenuItem
+            // splitter1
             // 
-            openFolderToolStripMenuItem.Name = "openFolderToolStripMenuItem";
-            openFolderToolStripMenuItem.Size = new Size(180, 22);
-            openFolderToolStripMenuItem.Text = "Open Folder";
-            openFolderToolStripMenuItem.Click += openFolderToolStripMenuItem_Click;
+            splitter1.BackColor = SystemColors.ControlLight;
+            splitter1.Dock = DockStyle.Top;
+            splitter1.Location = new Point(0, 0);
+            splitter1.Name = "splitter1";
+            splitter1.Size = new Size(191, 2);
+            splitter1.TabIndex = 8;
+            splitter1.TabStop = false;
+            // 
+            // currentKanjiOpenInEditor
+            // 
+            currentKanjiOpenInEditor.Dock = DockStyle.Bottom;
+            currentKanjiOpenInEditor.Enabled = false;
+            currentKanjiOpenInEditor.Location = new Point(0, 404);
+            currentKanjiOpenInEditor.Name = "currentKanjiOpenInEditor";
+            currentKanjiOpenInEditor.Size = new Size(191, 22);
+            currentKanjiOpenInEditor.TabIndex = 6;
+            currentKanjiOpenInEditor.Text = "Open in Editor";
+            currentKanjiOpenInEditor.UseVisualStyleBackColor = true;
+            currentKanjiOpenInEditor.Click += currentKanjiOpenInEditor_Click;
             // 
             // EditorForm
             // 
@@ -283,12 +337,11 @@
         private SplitContainer splitContainer1;
         private StatusStrip statusStrip1;
         private Splitter splitter2;
-        private Splitter splitter3;
         private FlowLayoutPanel flowLayoutPanel1;
         private ToolStripMenuItem exitToolStripMenuItem;
         private Label currentKanjiKeyword;
         private WebBrowser currentKanjiCharacter;
-        private Label currentKanjiComponents;
+        private LinkLabel currentKanjiComponents;
         private Label currentKanjiMnemonic;
         private Button currentKanjiOpenInEditor;
         private ToolStripMenuItem refreshToolStripMenuItem;
@@ -296,5 +349,11 @@
         private ToolStripSplitButton movePageRightBtn;
         private ToolStripStatusLabel kanjiPageIndicator;
         private ToolStripMenuItem openFolderToolStripMenuItem;
+        private LinkLabel currentKanjiWiktionaryLink;
+        private Splitter splitter1;
+        private Splitter splitter5;
+        private Splitter splitter4;
+        private Splitter splitter3;
+        private Splitter splitter6;
     }
 }

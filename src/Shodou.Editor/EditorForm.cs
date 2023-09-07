@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq.Expressions;
 using System.Runtime.InteropServices;
+using System.Security.Policy;
+using System.Windows.Forms;
 
 namespace Shodou.Editor
 {
@@ -32,9 +34,30 @@ namespace Shodou.Editor
             string[] importedKanji = File.ReadAllLines(Path.Combine(KanjiFolderImportPath, @$"{codepoint}.txt"));
             Clipboard.SetText(importedKanji[0].Split(":")[0]);
             currentKanjiKeyword.Text = importedKanji[1];
-            currentKanjiComponents.Text = importedKanji[2];
+            currentKanjiComponents.Text = "";
+            currentKanjiComponents.Links.Clear();
+
+            if (importedKanji[2].Length > 0)
+            {
+                //currentKanjiComponents.Text = importedKanji[2];
+                string[] split = importedKanji[2].Split("/").Skip(1).ToArray();
+                int index = 0;
+                foreach (string incomp in split)
+                {
+                    string comp = incomp;
+                    string[] importedComp = File.ReadAllLines(Path.Combine(KanjiFolderImportPath, @$"{comp.Split(":")[1]}.txt"));
+                    comp = importedComp[1] + " " + comp;
+                    currentKanjiComponents.Text += comp + "\n";
+                    currentKanjiComponents.Links.Add(index, comp.Length, comp.Split(":")[1]);
+                    index++;
+                    currentKanjiComponents.LinkClicked += (s, e) => ApplyCurrentKanji(comp.Split(":")[1]);
+                    index += comp.Length;
+                }
+            }
+
             currentKanjiMnemonic.Text = importedKanji[3];
             currentKanjiCharacter.DocumentText = File.ReadAllText($@"kanjivg\kanji\0{codepoint}.svg");
+            currentKanjiWiktionaryLink.Text = $"https://en.wiktionary.org/wiki/{importedKanji[0].Split(":")[0]}#Japanese";
         }
 
         public void SetWindowDarkMode()
@@ -59,14 +82,20 @@ namespace Shodou.Editor
             currentKanjiOpenInEditor.BackColor = Color.FromArgb(25, 25, 25);
             currentKanjiOpenInEditor.ForeColor = Color.White;
             currentKanjiOpenInEditor.FlatStyle = FlatStyle.Flat;
-            currentKanjiOpenInEditor.FlatAppearance.BorderColor = Color.Black;
+            currentKanjiOpenInEditor.FlatAppearance.BorderColor = Color.FromArgb(43, 43, 43);
+            currentKanjiOpenInEditor.FlatAppearance.BorderSize = 0;
             currentKanjiComponents.BackColor = Color.FromArgb(25, 25, 25);
             currentKanjiComponents.ForeColor = Color.White;
             currentKanjiComponents.BorderStyle = BorderStyle.None;
             splitContainer1.BackColor = Color.FromArgb(43, 43, 43);
             splitContainer1.ForeColor = Color.White;
+            splitter1.BackColor = Color.FromArgb(43, 43, 43);
             splitter2.BackColor = Color.FromArgb(43, 43, 43);
             splitter3.BackColor = Color.FromArgb(43, 43, 43);
+            splitter4.BackColor = Color.FromArgb(43, 43, 43);
+            splitter5.BackColor = Color.FromArgb(43, 43, 43);
+            splitter6.BackColor = Color.FromArgb(43, 43, 43);
+            currentKanjiComponents.LinkColor = Color.White;
         }
 
         private void EditorForm_Load(object sender, EventArgs e)
@@ -197,7 +226,7 @@ namespace Shodou.Editor
 
         private void openFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TryFolderDialogueAgain:
+        TryFolderDialogueAgain:
             using (var fbd = new FolderBrowserDialog())
             {
                 DialogResult result = fbd.ShowDialog();
@@ -215,6 +244,16 @@ namespace Shodou.Editor
                         goto TryFolderDialogueAgain;
                     }
                 }
+            }
+        }
+
+        private void currentKanjiWiktionaryLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            if (currentKanjiWiktionaryLink.Text != "(none)" && !String.IsNullOrEmpty(currentKanjiWiktionaryLink.Text))
+            {
+                ProcessStartInfo sInfo = new ProcessStartInfo(currentKanjiWiktionaryLink.Text);
+                sInfo.UseShellExecute = true;
+                Process.Start(sInfo);
             }
         }
     }
