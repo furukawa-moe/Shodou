@@ -66,9 +66,91 @@ namespace Shodou
                     File.WriteAllBytes($"resources/{kanjiToken.Codepoint}.txt", Encoding.UTF8.GetBytes(output.ToString()));
                 }
             }
-            CompileRealmFile();
+            CompileFlatFile();
         }
 
+        // Created out of boredom
+        public static void CompileFlatHtmlFile()
+        {
+            Console.WriteLine("Generate Flat Database");
+            string filepath = "resources";
+            DirectoryInfo d = new DirectoryInfo(filepath);
+
+            StringBuilder output = new StringBuilder();
+
+            output.Append("<html><body>");
+            foreach (string filename in File.ReadAllLines("topokanji/dependencies/1-to-N.txt"))
+            {
+                var file = new FileInfo($"resources/{((int)filename[0]).ToString("x")}.txt");
+                string[] txtCard = File.ReadAllLines(file.FullName);
+                string txtKanji = txtCard[0];
+                string txtKeyword = txtCard[1];
+                string txtComponents = txtCard[2];
+                string txtMnemonic = txtCard[3];
+                string txtSvg = File.ReadAllText(@$"kanjivg/kanji/0{txtKanji.Split(":")[1]}.svg");
+                txtSvg = txtSvg.Replace("\n", "").Replace("\r", "");
+                txtSvg = "<svg xmlns=\"http://www.w3.org/2000/svg\"" + txtSvg.Split("<svg xmlns=\"http://www.w3.org/2000/svg\"")[1];
+
+                output.Append($"<div class=\"card\" id=\"{txtKanji.Split(":")[1]}\">\n");
+                output.Append("<p class=\"txt-kanji\">" + txtKanji.Split(":")[0] + "</p>\n");
+                output.Append("\n" + txtSvg + "\n");
+                output.Append("<p class=\"txt-keyword\">" + txtKeyword + "</p>\n");
+                output.Append("<p class=\"txt-mnemonic\">" + txtMnemonic + "</p>\n<p>Components: \n");
+                foreach (string s in txtComponents.Split("/"))
+                {
+                    if (s == "") continue;
+                    output.Append($"<a class=\"txt-component\" href=\"#{s.Split(":")[1]}\">{s.Split(":")[0]}</a> ");
+                }
+                output.Append("</p></div>\n<hr>\n");
+            }
+            output.Append("</body></html>");
+
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"kanjicards_flat.html"))
+            {
+                file.WriteLine(output.ToString());
+            }
+        }
+
+        public static void CompileFlatFile()
+        {
+            Console.WriteLine("Generate Flat Database");
+            string filepath = "resources";
+            DirectoryInfo d = new DirectoryInfo(filepath);
+
+            StringBuilder output = new StringBuilder();
+
+            foreach (string filename in File.ReadAllLines("topokanji/dependencies/1-to-N.txt"))
+            {
+                var file = new FileInfo($"resources/{((int)filename[0]).ToString("x")}.txt");
+                string[] txtCard = File.ReadAllLines(file.FullName);
+                string txtKanji = txtCard[0];
+                string txtKeyword = txtCard[1];
+                string txtComponents = txtCard[2];
+                string txtMnemonic = txtCard[3];
+                string txtSvg = File.ReadAllText(@$"kanjivg/kanji/0{txtKanji.Split(":")[1]}.svg");
+                txtSvg = txtSvg.Replace("\n", "").Replace("\r", "");
+                txtSvg = "<svg xmlns=\"http://www.w3.org/2000/svg\"" + txtSvg.Split("<svg xmlns=\"http://www.w3.org/2000/svg\"")[1];
+
+                output.Append("[card]\n");
+                output.Append("kanji=" + txtKanji.Split(":")[0] + "\n");
+                output.Append("keyword=" + txtKeyword + "\n");
+                output.Append("mnemonic=" + txtMnemonic + "\n");
+                output.Append("components=");
+                foreach (string s in txtComponents.Split("/"))
+                {
+                    if (s == "") continue;
+                    output.Append($"{s.Split(":")[0]}");
+                }
+                output.Append("\nimage=" + txtSvg + "\n\n");
+            }
+
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"kanjicards_flat.txt"))
+            {
+                file.WriteLine(output.ToString());
+            }
+        }
+
+        // Probably won't end up doing this - we will import the cards somewhere else where we can write out the svg resources and worry about where we store them over there
         public static void CompileRealmFile()
         {
             if(File.Exists("kanjicards.realm")) File.Delete("kanjicards.realm");
