@@ -89,7 +89,6 @@ namespace Shodou
                 string txtMnemonic = txtCard[3];
                 string txtSvg = File.ReadAllText(@$"kanjivg/kanji/0{txtKanji.Split(":")[1]}.svg");
                 txtSvg = txtSvg.Replace("\n", "").Replace("\r", "");
-                txtSvg = "<svg xmlns=\"http://www.w3.org/2000/svg\"" + txtSvg.Split("<svg xmlns=\"http://www.w3.org/2000/svg\"")[1];
 
                 output.Append($"<div class=\"card\" id=\"{txtKanji.Split(":")[1]}\">\n");
                 output.Append("<p class=\"txt-kanji\">" + txtKanji.Split(":")[0] + "</p>\n");
@@ -128,8 +127,12 @@ namespace Shodou
                 string txtComponents = txtCard[2];
                 string txtMnemonic = txtCard[3];
                 string txtSvg = File.ReadAllText(@$"kanjivg/kanji/0{txtKanji.Split(":")[1]}.svg");
-                txtSvg = txtSvg.Replace("\n", "").Replace("\r", "");
-                txtSvg = "<svg xmlns=\"http://www.w3.org/2000/svg\"" + txtSvg.Split("<svg xmlns=\"http://www.w3.org/2000/svg\"")[1];
+                txtSvg = txtSvg.Replace("\n", " ").Replace("\r", " ");
+                txtSvg = txtSvg.Replace("  ", " ");
+                // this is gonna be GROSS
+                // Ommit the full copyright notice in the interest of file size. This should help a little.
+                txtSvg = txtSvg.Remove(txtSvg.IndexOf("<!--"), 692);
+                txtSvg = txtSvg.Replace(@"-->", "<!--Copyright (C) 2009/2010/2011 Ulrich Apel, Dist. under CC-BY-SA 3.0-->");
 
                 output.Append("[card]\n");
                 output.Append("kanji=" + txtKanji.Split(":")[0] + "\n");
